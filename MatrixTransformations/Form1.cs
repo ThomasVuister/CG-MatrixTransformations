@@ -27,9 +27,9 @@ namespace MatrixTransformations
 
         // Transformation variables
         float scale = 3F;
-        float degreesZ = 20F;
-        float degreesX = 20F;
-        float degreesY = 20F;
+        float degreesZ = 0;
+        float degreesX = 0;
+        float degreesY = 0;
         float xValue = 0F;
         float yValue = 0F;
         float zValue = 20F;
@@ -270,6 +270,30 @@ namespace MatrixTransformations
             else if (e.KeyCode == Keys.Z)
                 degreesZ -= .1F;
 
+            // Change d
+            if (e.Modifiers == Keys.Shift && e.KeyCode == Keys.D)
+                d += .1F;
+            else if (e.KeyCode == Keys.D)
+                d -= .1F;
+
+            // Change r
+            if (e.Modifiers == Keys.Shift && e.KeyCode == Keys.R)
+                r += .1F;
+            else if (e.KeyCode == Keys.R)
+                r -= .1F;
+
+            // Change theta
+            if (e.Modifiers == Keys.Shift && e.KeyCode == Keys.T)
+                theta += .1F;
+            else if (e.KeyCode == Keys.T)
+                theta -= .1F;
+
+            // Change phi
+            if (e.Modifiers == Keys.Shift && e.KeyCode == Keys.P)
+                phi += .1F;
+            else if (e.KeyCode == Keys.P)
+                phi -= .1F;
+
             // Reset
             if (e.KeyCode == Keys.C)
             {
@@ -298,7 +322,14 @@ namespace MatrixTransformations
             s += String.Format(nfi, "TranslateZ:" + "\t" + zValue + "\t" + "PgUp / PgDn" + "\n");
             s += String.Format(nfi, "RotateX:" + "\t" + degreesX + "\t" + "X / x" + "\n");
             s += String.Format(nfi, "RotateY:" + "\t\t" + degreesY + "\t" + "Y / y" + "\n");
-            s += String.Format(nfi, "RotateZ:" + "\t\t" + degreesZ + "\t" + "Z / z" + "\n");
+            s += String.Format(nfi, "RotateZ:" + "\t\t" + degreesZ + "\t" + "Z / z" + "\n\n");
+
+            s += String.Format(nfi, "d:" + "\t" + d + "\t" + "D / d" + "\n");
+            s += String.Format(nfi, "r:" + "\t" + r + "\t" + "R / r" + "\n");
+            s += String.Format(nfi, "theta:" + "\t" + theta + "\t" + "T / t" + "\n");
+            s += String.Format(nfi, "phi:" + "\t" + phi + "\t" + "P / p" + "\n\n");
+
+            s += String.Format(nfi, "Phase:");
 
             PointF p = new PointF(0, 0);
             Font font = new Font("Arial", 10);
