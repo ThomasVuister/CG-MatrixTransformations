@@ -26,12 +26,12 @@ namespace MatrixTransformations
         const int HEIGHT = 600;
 
         // Transformation variables
-        float scale = 100F;
+        float scale = 3F;
         float degreesZ = 20F;
         float degreesX = 20F;
         float degreesY = 20F;
-        float xValue = 40F;
-        float yValue = 20F;
+        float xValue = 0F;
+        float yValue = 0F;
         float zValue = 20F;
 
         // Starting parameters
@@ -122,6 +122,7 @@ namespace MatrixTransformations
             vb = RotateXTransformation(vb, degreesX);
             vb = RotateYTransformation(vb, degreesY);
             vb = TranslateTransformation(vb, new Vector(xValue, yValue, zValue));
+            vb = ProjectionTransformation(vb, d, zValue);
             vb = ViewTransformation(vb, r, theta, phi);
             vb = ViewportTransformation(vb);
             cube.Draw(e.Graphics, vb);
@@ -208,6 +209,17 @@ namespace MatrixTransformations
         {
             List<Vector> result = new List<Vector>();
             Matrix matrix = Matrix.ViewTransformation(r, theta, phi);
+
+            foreach (Vector v in vb)
+                result.Add(matrix * v);
+
+            return result;
+        }
+
+        public static List<Vector> ProjectionTransformation(List<Vector> vb, float d, float z)
+        {
+            List<Vector> result = new List<Vector>();
+            Matrix matrix = Matrix.ProjectionTransformation(d, z);
 
             foreach (Vector v in vb)
                 result.Add(matrix * v);

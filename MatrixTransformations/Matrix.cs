@@ -178,8 +178,13 @@ namespace MatrixTransformations
             return matrix;
         }
 
-        // ProjectionMatrix needs the z and d
-
+        public static Matrix ProjectionTransformation(float d, float z)
+        {
+            Matrix matrix = new Matrix();
+            matrix.mat[0, 0] = -(d / z);
+            matrix.mat[1, 1] = -(d / z);
+            return matrix;
+        }
 
         public override string ToString()
         {
