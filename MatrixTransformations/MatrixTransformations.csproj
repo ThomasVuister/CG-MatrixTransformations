@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AxisZ.cs" />
     <Compile Include="AxisX.cs" />
     <Compile Include="AxisY.cs" />
     <Compile Include="Cube.cs" />

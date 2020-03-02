@@ -11,6 +11,7 @@ namespace MatrixTransformations
         // Axes
         AxisX x_axis;
         AxisY y_axis;
+        AxisZ z_axis;
 
         // Objects
         Square square;
@@ -18,19 +19,23 @@ namespace MatrixTransformations
         Square orange_square;
         Square green_square;
 
+        Cube cube;
+
         // Window dimensions
         const int WIDTH = 800;
         const int HEIGHT = 600;
 
         // Transformation variables
-        float scale = 1.5F;
-        float degrees = 20F;
+        float scale = 100F;
+        float degreesZ = 20F;
+        float degreesX = 20F;
+        float degreesY = 20F;
         float xValue = 40F;
         float yValue = 20F;
-        float zValue = 0;
+        float zValue = 20F;
 
         Matrix S;
-        Matrix R;
+        Matrix Z;
         Matrix T;
 
         public Form1()
@@ -66,12 +71,15 @@ namespace MatrixTransformations
             // Define axes
             x_axis = new AxisX(200);
             y_axis = new AxisY(200);
+            z_axis = new AxisZ(200);
 
             // Create object
             square = new Square(Color.Purple);
             cyan_square = new Square(Color.Cyan);
             orange_square = new Square(Color.Orange);
             green_square = new Square(Color.Green);
+
+            cube = new Cube(Color.PaleGoldenrod);
 
         }
 
@@ -86,25 +94,36 @@ namespace MatrixTransformations
             x_axis.Draw(e.Graphics, vb);
             vb = ViewportTransformation(y_axis.vb);
             y_axis.Draw(e.Graphics, vb);
+            vb = ViewportTransformation(z_axis.vb);
+            z_axis.Draw(e.Graphics, vb);
 
             // Draw square
-            vb = ViewportTransformation(square.vb);
-            square.Draw(e.Graphics, vb);
-            vb = ScaleTransformation(cyan_square.vb, scale);
+            //vb = ViewportTransformation(square.vb);
+            //square.Draw(e.Graphics, vb);
+            //vb = ScaleTransformation(cyan_square.vb, scale);
+            //vb = ViewportTransformation(vb);
+            //cyan_square.Draw(e.Graphics, vb);
+            //vb = RotateTransformation(orange_square.vb, degrees);
+            //vb = ViewportTransformation(vb);
+            //orange_square.Draw(e.Graphics, vb);
+            //vb = TranslateTransformation(green_square.vb, new Vector(xValue, yValue, zValue));
+            //vb = ViewportTransformation(vb);
+            //green_square.Draw(e.Graphics, vb);
+
+            // Draw cube
+            vb = ScaleTransformation(cube.vertexbuffer, scale);
+            vb = RotateZTransformation(vb, degreesZ);
+            vb = RotateXTransformation(vb, degreesX);
+            vb = RotateYTransformation(vb, degreesY);
+            vb = TranslateTransformation(vb, new Vector(xValue, yValue, zValue));
             vb = ViewportTransformation(vb);
-            cyan_square.Draw(e.Graphics, vb);
-            vb = RotateTransformation(orange_square.vb, degrees);
-            vb = ViewportTransformation(vb);
-            orange_square.Draw(e.Graphics, vb);
-            vb = TranslateTransformation(green_square.vb, new Vector(xValue, yValue, zValue));
-            vb = ViewportTransformation(vb);
-            green_square.Draw(e.Graphics, vb);
+            cube.Draw(e.Graphics, vb);
 
             // Better way of doing the transformations, but not sure what to do next
             S = Matrix.ScaleMatrix(scale);
-            R = Matrix.RotateMatrix(degrees);
+            Z = Matrix.RotateYMatrix(degreesZ);
             T = Matrix.TranslateMatrix(new Vector(xValue, yValue, zValue));
-            Matrix total = S * R * T;
+            Matrix total = S * Z * T;
 
             // Show info
             ShowInfo(e.Graphics);
@@ -134,10 +153,32 @@ namespace MatrixTransformations
             return result;
         }
 
-        public static List<Vector> RotateTransformation(List<Vector> vb, float degrees)
+        public static List<Vector> RotateXTransformation(List<Vector> vb, float degrees)
         {
             List<Vector> result = new List<Vector>();
-            Matrix matrix = Matrix.RotateMatrix(degrees);
+            Matrix matrix = Matrix.RotateXMatrix(degrees);
+
+            foreach (Vector v in vb)
+                result.Add(matrix * v);
+
+            return result;
+        }
+
+        public static List<Vector> RotateYTransformation(List<Vector> vb, float degrees)
+        {
+            List<Vector> result = new List<Vector>();
+            Matrix matrix = Matrix.RotateYMatrix(degrees);
+
+            foreach (Vector v in vb)
+                result.Add(matrix * v);
+
+            return result;
+        }
+
+        public static List<Vector> RotateZTransformation(List<Vector> vb, float degrees)
+        {
+            List<Vector> result = new List<Vector>();
+            Matrix matrix = Matrix.RotateZMatrix(degrees);
 
             foreach (Vector v in vb)
                 result.Add(matrix * v);
@@ -163,25 +204,41 @@ namespace MatrixTransformations
 
             // Scale
             if (e.Modifiers == Keys.Shift && e.KeyCode == Keys.S)
-                scale += 0.01F;
+                scale += 1F;
             else if (e.KeyCode == Keys.S)
-                scale -= 0.01F;
-
-            // Rotate
-            if (e.KeyCode == Keys.Oemplus)
-                degrees += 0.01F;
-            if (e.KeyCode == Keys.OemMinus)
-                degrees -= 0.01F;
+                scale -= 1F;
 
             // Translate
-            if (e.KeyCode == Keys.Up)
-                yValue++;
-            if (e.KeyCode == Keys.Down)
-                yValue--;
             if (e.KeyCode == Keys.Right)
-                xValue++;
+                xValue += 1F;
             if (e.KeyCode == Keys.Left)
-                xValue--;
+                xValue -= 1F;
+            if (e.KeyCode == Keys.Up)
+                yValue += 1F;
+            if (e.KeyCode == Keys.Down)
+                yValue -= 1F;
+            if (e.KeyCode == Keys.PageUp)
+                zValue += 1F;
+            if (e.KeyCode == Keys.PageDown)
+                zValue -= 1F;
+
+            // RotateX
+            if (e.Modifiers == Keys.Shift && e.KeyCode == Keys.X)
+                degreesX += .1F;
+            else if (e.KeyCode == Keys.X)
+                degreesX -= .1F;
+
+            // RotateY
+            if (e.Modifiers == Keys.Shift && e.KeyCode == Keys.Y)
+                degreesY += .1F;
+            else if (e.KeyCode == Keys.Y)
+                degreesY -= .1F;
+
+            // RotateZ
+            if (e.Modifiers == Keys.Shift && e.KeyCode == Keys.Z)
+                degreesZ += .1F;
+            else if (e.KeyCode == Keys.Z)
+                degreesZ -= .1F;
 
             // repaint
             Invalidate();
@@ -194,9 +251,12 @@ namespace MatrixTransformations
             nfi.NumberDecimalSeparator = ".";
 
             s += String.Format(nfi, "Scale:" + "\t\t" + scale + "\t" + "S / s" + "\n");
-            s += String.Format(nfi, "RotateY:" + "\t\t" + degrees + "\t" + "+ / -" + "\n");
             s += String.Format(nfi, "TranslateX:" + "\t" + xValue + "\t" + "Left / Right" + "\n");
             s += String.Format(nfi, "TranslateY:" + "\t" + yValue + "\t" + "Up / Down" + "\n");
+            s += String.Format(nfi, "TranslateZ:" + "\t" + zValue + "\t" + "PgUp / PgDn" + "\n");
+            s += String.Format(nfi, "RotateX:" + "\t" + degreesX + "\t" + "X / x" + "\n");
+            s += String.Format(nfi, "RotateY:" + "\t\t" + degreesY + "\t" + "Y / y" + "\n");
+            s += String.Format(nfi, "RotateZ:" + "\t\t" + degreesZ + "\t" + "Z / z" + "\n");
 
             PointF p = new PointF(0, 0);
             Font font = new Font("Arial", 10);

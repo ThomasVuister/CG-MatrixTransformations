@@ -120,7 +120,7 @@ namespace MatrixTransformations
             return s * matrix;
         }
 
-        public static Matrix RotateMatrix(float degrees)
+        public static Matrix RotateZMatrix(float degrees)
         {
             decimal dec = new decimal(degrees);
             double doubleDegrees = Convert.ToDouble(dec);
@@ -128,6 +128,30 @@ namespace MatrixTransformations
             Matrix matrix = new Matrix();
             matrix.mat[0, 0] = (float)Math.Cos(doubleDegrees); matrix.mat[0, 1] = (float)-Math.Sin(doubleDegrees);
             matrix.mat[1, 0] = (float)Math.Sin(doubleDegrees); matrix.mat[1, 1] = (float)Math.Cos(doubleDegrees);
+
+            return matrix;
+        }
+
+        public static Matrix RotateXMatrix(float degrees)
+        {
+            decimal dec = new decimal(degrees);
+            double doubleDegrees = Convert.ToDouble(dec);
+
+            Matrix matrix = new Matrix();
+            matrix.mat[1, 1] = (float)Math.Cos(doubleDegrees); matrix.mat[1, 2] = (float)-Math.Sin(doubleDegrees);
+            matrix.mat[2, 1] = (float)Math.Sin(doubleDegrees); matrix.mat[2, 2] = (float)Math.Cos(doubleDegrees);
+
+            return matrix;
+        }
+
+        public static Matrix RotateYMatrix(float degrees)
+        {
+            decimal dec = new decimal(degrees);
+            double doubleDegrees = Convert.ToDouble(dec);
+
+            Matrix matrix = new Matrix();
+            matrix.mat[0, 0] = (float)Math.Cos(doubleDegrees); matrix.mat[0, 2] = (float)Math.Sin(doubleDegrees);
+            matrix.mat[2, 0] = (float)-Math.Sin(doubleDegrees); matrix.mat[2, 2] = (float)Math.Cos(doubleDegrees);
 
             return matrix;
         }
