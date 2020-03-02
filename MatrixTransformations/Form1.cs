@@ -34,6 +34,12 @@ namespace MatrixTransformations
         float yValue = 20F;
         float zValue = 20F;
 
+        // Starting parameters
+        float d = 800;
+        float r = 10;
+        float theta = -100;
+        float phi = -10;
+
         Matrix S;
         Matrix Z;
         Matrix T;
@@ -116,6 +122,7 @@ namespace MatrixTransformations
             vb = RotateXTransformation(vb, degreesX);
             vb = RotateYTransformation(vb, degreesY);
             vb = TranslateTransformation(vb, new Vector(xValue, yValue, zValue));
+            vb = ViewTransformation(vb, r, theta, phi);
             vb = ViewportTransformation(vb);
             cube.Draw(e.Graphics, vb);
 
@@ -197,6 +204,17 @@ namespace MatrixTransformations
             return result;
         }
 
+        public static List<Vector> ViewTransformation(List<Vector> vb, float r, float theta, float phi)
+        {
+            List<Vector> result = new List<Vector>();
+            Matrix matrix = Matrix.ViewTransformation(r, theta, phi);
+
+            foreach (Vector v in vb)
+                result.Add(matrix * v);
+
+            return result;
+        }
+
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
@@ -239,6 +257,18 @@ namespace MatrixTransformations
                 degreesZ += .1F;
             else if (e.KeyCode == Keys.Z)
                 degreesZ -= .1F;
+
+            // Reset
+            if (e.KeyCode == Keys.C)
+            {
+                scale = 100F;
+                degreesZ = 20F;
+                degreesX = 20F;
+                degreesY = 20F;
+                xValue = 40F;
+                yValue = 20F;
+                zValue = 20F;
+            }
 
             // repaint
             Invalidate();

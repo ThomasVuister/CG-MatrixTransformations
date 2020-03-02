@@ -165,6 +165,19 @@ namespace MatrixTransformations
             return matrix;
         }
 
+        public static Matrix ViewTransformation(float r, float theta, float phi)
+        {
+            double doubleTheta = Convert.ToDouble(theta);
+            double doublePhi = Convert.ToDouble(phi);
+
+            Matrix matrix = new Matrix();
+            matrix.mat[0, 0] = (float)-Math.Sin(doubleTheta); matrix.mat[0, 1] = (float)Math.Cos(doubleTheta);
+            matrix.mat[1, 0] = (float)-Math.Cos(doubleTheta) * (float)Math.Cos(doublePhi); matrix.mat[1, 1] = (float)-Math.Cos(doublePhi) * (float)Math.Sin(doubleTheta); matrix.mat[1, 2] = (float)Math.Sin(doublePhi);
+            matrix.mat[2, 0] = (float)Math.Cos(doubleTheta) * (float)Math.Sin(doublePhi); matrix.mat[2, 1] = (float)Math.Sin(doubleTheta) * (float)Math.Sin(doublePhi); matrix.mat[2, 2] = (float)Math.Cos(doublePhi); matrix.mat[2, 3] = -r;
+
+            return matrix;
+        }
+
         // ProjectionMatrix needs the z and d
 
 
