@@ -21,9 +21,9 @@ namespace MatrixTransformations
         public void Draw(Graphics g, List<Vector> vb)
         {
             Pen pen = new Pen(Color.Blue, 2f);
-            g.DrawLine(pen, vb[0].x, vb[0].y, vb[1].x, vb[1].y);
+            g.DrawLine(pen, vb[0].x, vb[0].y, vb[1].y, vb[1].z);
             Font font = new Font("Arial", 10);
-            PointF p = new PointF(vb[1].x, vb[1].y);
+            PointF p = new PointF(vb[1].y, vb[1].z);
             g.DrawString("z", font, Brushes.Blue, p);
         }
     }

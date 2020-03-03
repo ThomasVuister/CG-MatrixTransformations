@@ -26,13 +26,13 @@ namespace MatrixTransformations
         const int HEIGHT = 600;
 
         // Transformation variables
-        float scale = 3F;
+        float scale = 1F;
         float degreesZ = 0;
         float degreesX = 0;
         float degreesY = 0;
-        float xValue = 0F;
-        float yValue = 0F;
-        float zValue = 20F;
+        float xValue = 0;
+        float yValue = 0;
+        float zValue = 0;
 
         // Starting parameters
         float d = 800;
@@ -85,7 +85,7 @@ namespace MatrixTransformations
             orange_square = new Square(Color.Orange);
             green_square = new Square(Color.Green);
 
-            cube = new Cube(Color.PaleGoldenrod);
+            cube = new Cube(Color.Purple);
 
         }
 
@@ -121,9 +121,11 @@ namespace MatrixTransformations
             vb = RotateZTransformation(vb, degreesZ);
             vb = RotateXTransformation(vb, degreesX);
             vb = RotateYTransformation(vb, degreesY);
-            vb = TranslateTransformation(vb, new Vector(xValue, yValue, zValue));
-            vb = ProjectionTransformation(vb, d, zValue);
+            
             vb = ViewTransformation(vb, r, theta, phi);
+            vb = ProjectionTransformation(vb, d, zValue);
+
+            vb = TranslateTransformation(vb, new Vector(xValue, yValue, zValue));
             vb = ViewportTransformation(vb);
             cube.Draw(e.Graphics, vb);
 
@@ -234,9 +236,9 @@ namespace MatrixTransformations
 
             // Scale
             if (e.Modifiers == Keys.Shift && e.KeyCode == Keys.S)
-                scale += 1F;
+                scale += .1F;
             else if (e.KeyCode == Keys.S)
-                scale -= 1F;
+                scale -= .1F;
 
             // Translate
             if (e.KeyCode == Keys.Right)
@@ -297,13 +299,13 @@ namespace MatrixTransformations
             // Reset
             if (e.KeyCode == Keys.C)
             {
-                scale = 100F;
-                degreesZ = 20F;
-                degreesX = 20F;
-                degreesY = 20F;
-                xValue = 40F;
-                yValue = 20F;
-                zValue = 20F;
+                scale = 1F;
+                degreesZ = 0;
+                degreesX = 0;
+                degreesY = 0;
+                xValue = 0;
+                yValue = 0;
+                zValue = 0;
             }
 
             // repaint
