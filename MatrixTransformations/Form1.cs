@@ -14,12 +14,7 @@ namespace MatrixTransformations
         AxisY y_axis;
         AxisZ z_axis;
 
-        // Objects
-        Square square;
-        Square cyan_square;
-        Square orange_square;
-        Square green_square;
-
+        // Cube
         Cube cube;
 
         // Window dimensions
@@ -41,10 +36,9 @@ namespace MatrixTransformations
         float theta = -100;
         float phi = -10;
 
+        // Matrices for transformations
         Matrix S;
-        Matrix X;
-        Matrix Y;
-        Matrix Z;
+        Matrix R;
         Matrix T;
 
         public Form1()
@@ -78,17 +72,15 @@ namespace MatrixTransformations
             Console.WriteLine(m2 * v3); // 28, 16
 
             // Define axes
-            x_axis = new AxisX(200);
-            y_axis = new AxisY(200);
-            z_axis = new AxisZ(200);
+            x_axis = new AxisX(2);
+            y_axis = new AxisY(2);
+            z_axis = new AxisZ(2);
 
             // Create object
-            square = new Square(Color.Purple);
-            cyan_square = new Square(Color.Cyan);
-            orange_square = new Square(Color.Orange);
-            green_square = new Square(Color.Green);
-
             cube = new Cube(Color.Purple);
+
+            // Timer tick += new eventhandler()
+            // interval = 50;
 
         }
 
@@ -99,50 +91,26 @@ namespace MatrixTransformations
             base.OnPaint(e);
 
             // Draw axes
-            vb = ViewportTransformation(x_axis.vb);
+            vb = ViewingPipeline(x_axis.vb, d, r, theta, phi);
             x_axis.Draw(e.Graphics, vb);
-            vb = ViewportTransformation(y_axis.vb);
+            vb = ViewingPipeline(y_axis.vb, d, r, theta, phi);
             y_axis.Draw(e.Graphics, vb);
-            vb = ViewportTransformation(z_axis.vb);
+            vb = ViewingPipeline(z_axis.vb, d, r, theta, phi);
             z_axis.Draw(e.Graphics, vb);
 
-            // Draw square
-            //vb = ViewportTransformation(square.vb);
-            //square.Draw(e.Graphics, vb);
-            //vb = ScaleTransformation(cyan_square.vb, scale);
-            //vb = ViewportTransformation(vb);
-            //cyan_square.Draw(e.Graphics, vb);
-            //vb = RotateTransformation(orange_square.vb, degrees);
-            //vb = ViewportTransformation(vb);
-            //orange_square.Draw(e.Graphics, vb);
-            //vb = TranslateTransformation(green_square.vb, new Vector(xValue, yValue, zValue));
-            //vb = ViewportTransformation(vb);
-            //green_square.Draw(e.Graphics, vb);
-
             // Draw cube
-            vb = ScaleTransformation(cube.vertexbuffer, scale);
-            vb = RotateZTransformation(vb, degreesZ);
-            vb = RotateXTransformation(vb, degreesX);
-            vb = RotateYTransformation(vb, degreesY);
+            vb.Clear();
 
-            vb = TranslateTransformation(vb, new Vector(xValue, yValue, zValue));
+            S = Matrix.ScaleMatrix(scale);
+            R = Matrix.RotateXMatrix(degreesX) * Matrix.RotateYMatrix(degreesY) * Matrix.RotateZMatrix(degreesZ);
+            T = Matrix.TranslateMatrix(new Vector(xValue, yValue, zValue));
+            Matrix total = S * R * T;
+
+            foreach (Vector v in cube.vertexbuffer)
+                vb.Add(total * v);
+
             vb = ViewingPipeline(vb, d, r, theta, phi);
-
             cube.Draw(e.Graphics, vb);
-
-            // Better way of doing the transformations, but not sure what to do next
-            //S = Matrix.ScaleMatrix(scale);
-            //X = Matrix.RotateXMatrix(degreesX);
-            //Y = Matrix.RotateYMatrix(degreesY);
-            //Z = Matrix.RotateYMatrix(degreesZ);
-            //T = Matrix.TranslateMatrix(new Vector(xValue, yValue, zValue));
-            //Matrix total = S * X * Y * Z * T;
-
-            //foreach (Vector v in cube.vertexbuffer)
-            //    vb.Add(total * v);
-
-            //vb = ViewportTransformation(vb);
-            //cube.Draw(e.Graphics, vb);
 
             // Show info
             ShowInfo(e.Graphics);
@@ -177,61 +145,6 @@ namespace MatrixTransformations
                 result.Add(vp);
             }
             return ViewportTransformation(result);
-        }
-
-        public static List<Vector> ScaleTransformation(List<Vector> vb, float scale)
-        {
-            List<Vector> result = new List<Vector>();
-            Matrix matrix = Matrix.ScaleMatrix(scale);
-
-            foreach (Vector v in vb)
-                result.Add(matrix * v);
-
-            return result;
-        }
-
-        public static List<Vector> RotateXTransformation(List<Vector> vb, float degrees)
-        {
-            List<Vector> result = new List<Vector>();
-            Matrix matrix = Matrix.RotateXMatrix(degrees);
-
-            foreach (Vector v in vb)
-                result.Add(matrix * v);
-
-            return result;
-        }
-
-        public static List<Vector> RotateYTransformation(List<Vector> vb, float degrees)
-        {
-            List<Vector> result = new List<Vector>();
-            Matrix matrix = Matrix.RotateYMatrix(degrees);
-
-            foreach (Vector v in vb)
-                result.Add(matrix * v);
-
-            return result;
-        }
-
-        public static List<Vector> RotateZTransformation(List<Vector> vb, float degrees)
-        {
-            List<Vector> result = new List<Vector>();
-            Matrix matrix = Matrix.RotateZMatrix(degrees);
-
-            foreach (Vector v in vb)
-                result.Add(matrix * v);
-
-            return result;
-        }
-
-        public static List<Vector> TranslateTransformation(List<Vector> vb, Vector vector)
-        {
-            List<Vector> result = new List<Vector>();
-            Matrix matrix = Matrix.TranslateMatrix(vector);
-
-            foreach (Vector v in vb)
-                result.Add(matrix * v);
-
-            return result;
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
