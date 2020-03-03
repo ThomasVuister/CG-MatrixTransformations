@@ -41,6 +41,9 @@ namespace MatrixTransformations
         Matrix R;
         Matrix T;
 
+        // Timer
+        System.Windows.Forms.Timer timer;
+
         public Form1()
         {
             InitializeComponent();
@@ -79,9 +82,18 @@ namespace MatrixTransformations
             // Create object
             cube = new Cube(Color.Purple);
 
-            // Timer tick += new eventhandler()
-            // interval = 50;
+            // Timer
+            timer = new System.Windows.Forms.Timer();
+            timer.Interval = 50;
+            timer.Tick += new EventHandler(timer_tick);
 
+        }
+
+        private void timer_tick(object sender, EventArgs e)
+        {
+            scale += .01F;
+            
+            Invalidate();
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -217,12 +229,13 @@ namespace MatrixTransformations
             // Animation
             if (e.KeyCode == Keys.A)
             {
-                // TO DO
+                timer.Start();
             }
 
             // Reset
             if (e.KeyCode == Keys.C)
             {
+                timer.Stop();
                 ResetVariables();
             }
 
