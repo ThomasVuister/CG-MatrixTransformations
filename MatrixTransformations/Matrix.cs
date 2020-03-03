@@ -167,13 +167,21 @@ namespace MatrixTransformations
 
         public static Matrix ViewTransformation(float r, float theta, float phi)
         {
-            double doubleTheta = Convert.ToDouble(theta);
-            double doublePhi = Convert.ToDouble(phi);
+            float radiusTheta = (theta / 180) * (float)Math.PI;
+            float radiusPhi = (phi / 180) * (float)Math.PI;
 
             Matrix matrix = new Matrix();
-            matrix.mat[0, 0] = (float)-Math.Sin(doubleTheta); matrix.mat[0, 1] = (float)Math.Cos(doubleTheta);
-            matrix.mat[1, 0] = (float)-Math.Cos(doubleTheta) * (float)Math.Cos(doublePhi); matrix.mat[1, 1] = (float)-Math.Cos(doublePhi) * (float)Math.Sin(doubleTheta); matrix.mat[1, 2] = (float)Math.Sin(doublePhi);
-            matrix.mat[2, 0] = (float)Math.Cos(doubleTheta) * (float)Math.Sin(doublePhi); matrix.mat[2, 1] = (float)Math.Sin(doubleTheta) * (float)Math.Sin(doublePhi); matrix.mat[2, 2] = (float)Math.Cos(doublePhi); matrix.mat[2, 3] = -r;
+            matrix.mat[0, 0] = -(float)Math.Sin(radiusTheta); 
+            matrix.mat[0, 1] = (float)Math.Cos(radiusTheta);
+
+            matrix.mat[1, 0] = (float)(-Math.Cos(radiusTheta) * Math.Cos(radiusPhi)); 
+            matrix.mat[1, 1] = (float)(-Math.Cos(radiusPhi) * Math.Sin(radiusTheta)); 
+            matrix.mat[1, 2] = (float)Math.Sin(radiusPhi);
+
+            matrix.mat[2, 0] = (float)(Math.Cos(radiusTheta) * Math.Sin(radiusPhi)); 
+            matrix.mat[2, 1] = (float)(Math.Sin(radiusTheta) * Math.Sin(radiusPhi)); 
+            matrix.mat[2, 2] = (float)Math.Cos(radiusPhi); 
+            matrix.mat[2, 3] = -r;
 
             return matrix;
         }
@@ -181,8 +189,8 @@ namespace MatrixTransformations
         public static Matrix ProjectionTransformation(float d, float z)
         {
             Matrix matrix = new Matrix();
-            matrix.mat[0, 0] = -(d / z);
-            matrix.mat[1, 1] = -(d / z);
+            matrix.mat[0, 0] = -d / z;
+            matrix.mat[1, 1] = -d / z;
             return matrix;
         }
 

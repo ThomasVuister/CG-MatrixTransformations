@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
+using System.Timers;
 
 namespace MatrixTransformations
 {
@@ -41,6 +42,8 @@ namespace MatrixTransformations
         float phi = -10;
 
         Matrix S;
+        Matrix X;
+        Matrix Y;
         Matrix Z;
         Matrix T;
 
@@ -121,19 +124,25 @@ namespace MatrixTransformations
             vb = RotateZTransformation(vb, degreesZ);
             vb = RotateXTransformation(vb, degreesX);
             vb = RotateYTransformation(vb, degreesY);
-            
-            vb = ViewTransformation(vb, r, theta, phi);
-            vb = ProjectionTransformation(vb, d, zValue);
 
             vb = TranslateTransformation(vb, new Vector(xValue, yValue, zValue));
-            vb = ViewportTransformation(vb);
+            vb = ViewingPipeline(vb, d, r, theta, phi);
+
             cube.Draw(e.Graphics, vb);
 
             // Better way of doing the transformations, but not sure what to do next
-            S = Matrix.ScaleMatrix(scale);
-            Z = Matrix.RotateYMatrix(degreesZ);
-            T = Matrix.TranslateMatrix(new Vector(xValue, yValue, zValue));
-            Matrix total = S * Z * T;
+            //S = Matrix.ScaleMatrix(scale);
+            //X = Matrix.RotateXMatrix(degreesX);
+            //Y = Matrix.RotateYMatrix(degreesY);
+            //Z = Matrix.RotateYMatrix(degreesZ);
+            //T = Matrix.TranslateMatrix(new Vector(xValue, yValue, zValue));
+            //Matrix total = S * X * Y * Z * T;
+
+            //foreach (Vector v in cube.vertexbuffer)
+            //    vb.Add(total * v);
+
+            //vb = ViewportTransformation(vb);
+            //cube.Draw(e.Graphics, vb);
 
             // Show info
             ShowInfo(e.Graphics);
@@ -150,6 +159,24 @@ namespace MatrixTransformations
                 result.Add(new Vector(v.x + delta_x, delta_y - v.y, v.z));
 
             return result;
+        }
+
+        public static List<Vector> ViewingPipeline(List<Vector> vb, float d, float r, float theta, float phi)
+        {
+            List<Vector> result = new List<Vector>();
+            Vector vp = new Vector();
+            Matrix view = Matrix.ViewTransformation(r, theta, phi);
+
+            foreach (Vector v in vb)
+            {
+                vp = view * v;
+
+                Matrix proj = Matrix.ProjectionTransformation(d, vp.z);
+                vp = proj * vp;
+
+                result.Add(vp);
+            }
+            return ViewportTransformation(result);
         }
 
         public static List<Vector> ScaleTransformation(List<Vector> vb, float scale)
@@ -200,28 +227,6 @@ namespace MatrixTransformations
         {
             List<Vector> result = new List<Vector>();
             Matrix matrix = Matrix.TranslateMatrix(vector);
-
-            foreach (Vector v in vb)
-                result.Add(matrix * v);
-
-            return result;
-        }
-
-        public static List<Vector> ViewTransformation(List<Vector> vb, float r, float theta, float phi)
-        {
-            List<Vector> result = new List<Vector>();
-            Matrix matrix = Matrix.ViewTransformation(r, theta, phi);
-
-            foreach (Vector v in vb)
-                result.Add(matrix * v);
-
-            return result;
-        }
-
-        public static List<Vector> ProjectionTransformation(List<Vector> vb, float d, float z)
-        {
-            List<Vector> result = new List<Vector>();
-            Matrix matrix = Matrix.ProjectionTransformation(d, z);
 
             foreach (Vector v in vb)
                 result.Add(matrix * v);
@@ -296,20 +301,31 @@ namespace MatrixTransformations
             else if (e.KeyCode == Keys.P)
                 phi -= .1F;
 
+            // Animation
+            if (e.KeyCode == Keys.A)
+            {
+                // TO DO
+            }
+
             // Reset
             if (e.KeyCode == Keys.C)
             {
-                scale = 1F;
-                degreesZ = 0;
-                degreesX = 0;
-                degreesY = 0;
-                xValue = 0;
-                yValue = 0;
-                zValue = 0;
+                ResetVariables();
             }
 
             // repaint
             Invalidate();
+        }
+
+        private void ResetVariables()
+        {
+            scale = 1F;
+            degreesZ = 0;
+            degreesX = 0;
+            degreesY = 0;
+            xValue = 0;
+            yValue = 0;
+            zValue = 0;
         }
 
         private void ShowInfo(Graphics g)
