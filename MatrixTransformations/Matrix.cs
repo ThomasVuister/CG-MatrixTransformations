@@ -122,36 +122,33 @@ namespace MatrixTransformations
 
         public static Matrix RotateZMatrix(float degrees)
         {
-            decimal dec = new decimal(degrees);
-            double doubleDegrees = Convert.ToDouble(dec);
+            float radius = (degrees / 180) * (float)Math.PI;
 
             Matrix matrix = new Matrix();
-            matrix.mat[0, 0] = (float)Math.Cos(doubleDegrees); matrix.mat[0, 1] = (float)-Math.Sin(doubleDegrees);
-            matrix.mat[1, 0] = (float)Math.Sin(doubleDegrees); matrix.mat[1, 1] = (float)Math.Cos(doubleDegrees);
+            matrix.mat[0, 0] = (float)Math.Cos(radius); matrix.mat[0, 1] = (float)-Math.Sin(radius);
+            matrix.mat[1, 0] = (float)Math.Sin(radius); matrix.mat[1, 1] = (float)Math.Cos(radius);
 
             return matrix;
         }
 
         public static Matrix RotateXMatrix(float degrees)
         {
-            decimal dec = new decimal(degrees);
-            double doubleDegrees = Convert.ToDouble(dec);
+            float radius = (degrees / 180) * (float)Math.PI;
 
             Matrix matrix = new Matrix();
-            matrix.mat[1, 1] = (float)Math.Cos(doubleDegrees); matrix.mat[1, 2] = (float)-Math.Sin(doubleDegrees);
-            matrix.mat[2, 1] = (float)Math.Sin(doubleDegrees); matrix.mat[2, 2] = (float)Math.Cos(doubleDegrees);
+            matrix.mat[1, 1] = (float)Math.Cos(radius); matrix.mat[1, 2] = (float)-Math.Sin(radius);
+            matrix.mat[2, 1] = (float)Math.Sin(radius); matrix.mat[2, 2] = (float)Math.Cos(radius);
 
             return matrix;
         }
 
         public static Matrix RotateYMatrix(float degrees)
         {
-            decimal dec = new decimal(degrees);
-            double doubleDegrees = Convert.ToDouble(dec);
+            float radius = (degrees / 180) * (float)Math.PI;
 
             Matrix matrix = new Matrix();
-            matrix.mat[0, 0] = (float)Math.Cos(doubleDegrees); matrix.mat[0, 2] = (float)Math.Sin(doubleDegrees);
-            matrix.mat[2, 0] = (float)-Math.Sin(doubleDegrees); matrix.mat[2, 2] = (float)Math.Cos(doubleDegrees);
+            matrix.mat[0, 0] = (float)Math.Cos(radius); matrix.mat[0, 2] = (float)Math.Sin(radius);
+            matrix.mat[2, 0] = (float)-Math.Sin(radius); matrix.mat[2, 2] = (float)Math.Cos(radius);
 
             return matrix;
         }

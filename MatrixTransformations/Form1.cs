@@ -23,9 +23,9 @@ namespace MatrixTransformations
 
         // Transformation variables
         float scale = 1F;
-        float degreesZ = 0;
         float degreesX = 0;
         float degreesY = 0;
+        float degreesZ = 0;
         float xValue = 0;
         float yValue = 0;
         float zValue = 0;
@@ -43,6 +43,7 @@ namespace MatrixTransformations
 
         // Timer
         System.Windows.Forms.Timer timer;
+        int phase = 0;
 
         public Form1()
         {
@@ -86,13 +87,48 @@ namespace MatrixTransformations
             timer = new System.Windows.Forms.Timer();
             timer.Interval = 50;
             timer.Tick += new EventHandler(timer_tick);
-
         }
 
         private void timer_tick(object sender, EventArgs e)
         {
-            scale += .01F;
-            
+            switch (phase)
+            {
+                case 1:
+                    theta--;
+                    if (scale < 1.5F) scale += .01F;
+                    else phase = -1;
+                    break;
+                case -1:
+                    theta--;
+                    if (scale > 1F) scale -= .01F;
+                    else phase = 2;
+                    break;
+                case 2:
+                    theta--;
+                    if (degreesX < 45F) degreesX += 1F;
+                    else phase = -2;
+                    break;
+                case -2:
+                    theta--;
+                    if (degreesX > 0F) degreesX -= 1F;
+                    else phase = 3;
+                    break;
+                case 3:
+                    phi++;
+                    if (degreesY < 45F) degreesY += 1F;
+                    else phase = -3;
+                    break;
+                case -3:
+                    phi++;
+                    if (degreesY > 0F) degreesY -= 1F;
+                    else phase = 4;
+                    break;
+                case 4:
+                    if (theta < -100) theta++;
+                    if (phi > -10) phi--;
+                    if (theta == -100 && phi == -10) phase = 1;
+                    break;
+            }
             Invalidate();
         }
 
@@ -111,12 +147,12 @@ namespace MatrixTransformations
             z_axis.Draw(e.Graphics, vb);
 
             // Draw cube
-            vb.Clear();
-
             S = Matrix.ScaleMatrix(scale);
             R = Matrix.RotateXMatrix(degreesX) * Matrix.RotateYMatrix(degreesY) * Matrix.RotateZMatrix(degreesZ);
             T = Matrix.TranslateMatrix(new Vector(xValue, yValue, zValue));
             Matrix total = S * R * T;
+
+            vb.Clear();
 
             foreach (Vector v in cube.vertexbuffer)
                 vb.Add(total * v);
@@ -216,19 +252,20 @@ namespace MatrixTransformations
 
             // Change theta
             if (e.Modifiers == Keys.Shift && e.KeyCode == Keys.T)
-                theta += .1F;
+                theta += 1F;
             else if (e.KeyCode == Keys.T)
-                theta -= .1F;
+                theta -= 1F;
 
             // Change phi
             if (e.Modifiers == Keys.Shift && e.KeyCode == Keys.P)
-                phi += .1F;
+                phi += 1F;
             else if (e.KeyCode == Keys.P)
-                phi -= .1F;
+                phi -= 1F;
 
             // Animation
             if (e.KeyCode == Keys.A)
             {
+                phase = 1;
                 timer.Start();
             }
 
@@ -236,6 +273,7 @@ namespace MatrixTransformations
             if (e.KeyCode == Keys.C)
             {
                 timer.Stop();
+                phase = 0;
                 ResetVariables();
             }
 
@@ -246,12 +284,17 @@ namespace MatrixTransformations
         private void ResetVariables()
         {
             scale = 1F;
-            degreesZ = 0;
             degreesX = 0;
             degreesY = 0;
+            degreesZ = 0;
             xValue = 0;
             yValue = 0;
             zValue = 0;
+
+            d = 800;
+            r = 10;
+            theta = -100;
+            phi = -10;
         }
 
         private void ShowInfo(Graphics g)
@@ -273,7 +316,7 @@ namespace MatrixTransformations
             s += String.Format(nfi, "theta:" + "\t" + theta + "\t" + "T / t" + "\n");
             s += String.Format(nfi, "phi:" + "\t" + phi + "\t" + "P / p" + "\n\n");
 
-            s += String.Format(nfi, "Phase:");
+            s += String.Format(nfi, "Phase:" + "\t" + phase);
 
             PointF p = new PointF(0, 0);
             Font font = new Font("Arial", 10);
