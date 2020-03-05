@@ -208,17 +208,17 @@ namespace MatrixTransformations
 
             // Translate
             if (e.KeyCode == Keys.Right)
-                xValue += 1F;
+                xValue += .1F;
             if (e.KeyCode == Keys.Left)
-                xValue -= 1F;
+                xValue -= .1F;
             if (e.KeyCode == Keys.Up)
-                yValue += 1F;
+                yValue += .1F;
             if (e.KeyCode == Keys.Down)
-                yValue -= 1F;
+                yValue -= .1F;
             if (e.KeyCode == Keys.PageUp)
-                zValue += 1F;
+                zValue += .1F;
             if (e.KeyCode == Keys.PageDown)
-                zValue -= 1F;
+                zValue -= .1F;
 
             // RotateX
             if (e.Modifiers == Keys.Shift && e.KeyCode == Keys.X)
@@ -240,15 +240,15 @@ namespace MatrixTransformations
 
             // Change d
             if (e.Modifiers == Keys.Shift && e.KeyCode == Keys.D)
-                d += .1F;
+                d += 1F;
             else if (e.KeyCode == Keys.D)
-                d -= .1F;
+                d -= 1F;
 
             // Change r
             if (e.Modifiers == Keys.Shift && e.KeyCode == Keys.R)
-                r += .1F;
+                r += 1F;
             else if (e.KeyCode == Keys.R)
-                r -= .1F;
+                r -= 1F;
 
             // Change theta
             if (e.Modifiers == Keys.Shift && e.KeyCode == Keys.T)
@@ -303,13 +303,13 @@ namespace MatrixTransformations
             NumberFormatInfo nfi = new NumberFormatInfo();
             nfi.NumberDecimalSeparator = ".";
 
-            s += String.Format(nfi, "Scale:" + "\t\t" + scale + "\t" + "S / s" + "\n");
-            s += String.Format(nfi, "TranslateX:" + "\t" + xValue + "\t" + "Left / Right" + "\n");
-            s += String.Format(nfi, "TranslateY:" + "\t" + yValue + "\t" + "Up / Down" + "\n");
-            s += String.Format(nfi, "TranslateZ:" + "\t" + zValue + "\t" + "PgUp / PgDn" + "\n");
-            s += String.Format(nfi, "RotateX:" + "\t" + degreesX + "\t" + "X / x" + "\n");
-            s += String.Format(nfi, "RotateY:" + "\t\t" + degreesY + "\t" + "Y / y" + "\n");
-            s += String.Format(nfi, "RotateZ:" + "\t\t" + degreesZ + "\t" + "Z / z" + "\n\n");
+            s += String.Format(nfi, "Scale:" + "\t\t" + Math.Round(scale, 2).ToString(nfi) + "\t" + "S / s" + "\n");
+            s += String.Format(nfi, "TranslateX:" + "\t" + Math.Round(xValue, 1).ToString(nfi) + "\t" + "Left / Right" + "\n");
+            s += String.Format(nfi, "TranslateY:" + "\t" + Math.Round(yValue, 1).ToString(nfi) + "\t" + "Up / Down" + "\n");
+            s += String.Format(nfi, "TranslateZ:" + "\t" + Math.Round(zValue, 1).ToString(nfi) + "\t" + "PgUp / PgDn" + "\n");
+            s += String.Format(nfi, "RotateX:" + "\t" + Math.Round(degreesX, 1).ToString(nfi) + "\t" + "X / x" + "\n");
+            s += String.Format(nfi, "RotateY:" + "\t\t" + Math.Round(degreesY, 1).ToString(nfi) + "\t" + "Y / y" + "\n");
+            s += String.Format(nfi, "RotateZ:" + "\t\t" + Math.Round(degreesZ, 1).ToString(nfi) + "\t" + "Z / z" + "\n\n");
 
             s += String.Format(nfi, "d:" + "\t" + d + "\t" + "D / d" + "\n");
             s += String.Format(nfi, "r:" + "\t" + r + "\t" + "R / r" + "\n");
